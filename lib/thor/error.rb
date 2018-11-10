@@ -3,21 +3,19 @@ class Thor
     begin
       require 'did_you_mean'
 
-      module DidYouMean
-        # In order to support versions of Ruby that don't have keyword
-        # arguments, we need our own spell checker class that doesn't take key
-        # words. Even though this code wouldn't be hit because of the check
-        # above, it's still necessary because the interpreter would otherwise be
-        # unable to parse the file.
-        class NoKwargSpellChecker < SpellChecker
-          def initialize(dictionary)
-            @dictionary = dictionary
-          end
+      # In order to support versions of Ruby that don't have keyword
+      # arguments, we need our own spell checker class that doesn't take key
+      # words. Even though this code wouldn't be hit because of the check
+      # above, it's still necessary because the interpreter would otherwise be
+      # unable to parse the file.
+      class NoKwargSpellChecker < DidYouMean::SpellChecker
+        def initialize(dictionary)
+          @dictionary = dictionary
         end
       end
 
       DidYouMean::Correctable
-    rescue LoadError
+    rescue LoadError, NameError
     end
 
   # Thor::Error is raised when it's caused by wrong usage of thor classes. Those
@@ -43,7 +41,7 @@ class Thor
       end
 
       def spell_checker
-        DidYouMean::NoKwargSpellChecker.new(error.all_commands)
+        NoKwargSpellChecker.new(error.all_commands)
       end
     end
 
@@ -86,7 +84,7 @@ class Thor
 
       def spell_checker
         @spell_checker ||=
-          DidYouMean::NoKwargSpellChecker.new(error.switches)
+          NoKwargSpellChecker.new(error.switches)
       end
     end
 

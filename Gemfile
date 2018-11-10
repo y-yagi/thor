@@ -18,6 +18,10 @@ group :test do
   gem "addressable", "~> 2.3.6", :platforms => [:ruby_18]
   gem "childlabor"
   gem "coveralls", ">= 0.8.19"
+  if RUBY_VERSION > "1.9"
+    # `did_you_mean` can't build with Ruby 1.8.
+    gem "did_you_mean"
+  end
   gem "json", "< 2" # This is to support Ruby 1.8 and 1.9
   gem "mime-types", "~> 1.25", :platforms => [:jruby, :ruby_18]
   gem "rest-client", "~> 1.6.0", :platforms => [:jruby, :ruby_18]
